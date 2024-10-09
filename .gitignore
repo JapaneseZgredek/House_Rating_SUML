@@ -1,0 +1,61 @@
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environment
+venv/
+env/
+.venv/
+.env/
+venv.bak/
+
+# VS Code workspace settings
+.vscode/
+
+# pyenv
+.python-version
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# pipenv
+Pipfile.lock
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre
+.pyre/
+
+# FastAPI and uvicorn logs
+*.log
+
+# Local .env file (environment variables)
+.env
+
+# Jinja2 compiled templates
+*.j2c
+
+# Static files cache (if any are created dynamically)
+static/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db

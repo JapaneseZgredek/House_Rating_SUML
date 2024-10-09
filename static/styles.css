@@ -1,0 +1,17 @@
+/* static.css */
+.navbar {
+    background-color: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.navbar a {
+    text-decoration: none;
+    color: #007bff;
+    padding: 8px 16px;
+}
+.navbar a:hover {
+    background-color: #e2e6ea;
+    border-radius: 4px;
+}

@@ -1,16 +1,24 @@
-# This is a sample Python script.
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+import logging
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+app = FastAPI()
 
+# Configure basic logging settings
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+# Set up templates and static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
+@app.get("/", response_class=HTMLResponse)
+def read_root(request: Request):
+    logging.info(f"Received request at '/' from {request.client.host}")
+    return templates.TemplateResponse("home.html", {"request": request})
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+@app.get("/about", response_class=HTMLResponse)
+def about(request: Request):
+    logging.info(f"Received request at '/about' from {request.client.host}")
+    return templates.TemplateResponse("about.html", {"request": request})
