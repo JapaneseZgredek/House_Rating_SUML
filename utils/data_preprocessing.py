@@ -1,5 +1,6 @@
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.model_selection import train_test_split
 
 def load_data(file_path):
@@ -7,19 +8,39 @@ def load_data(file_path):
     return data
 
 def preprocess_data(data, target_column, test_size=0.2, random_state=42):
-    data = data.dropna(subset=[target_column])  # Removes rows with empty target_column
+    # Drop rows with missing target values
+    data = data.dropna(subset=[target_column])
 
-    data = data.fillna(data.mean())  # Replace NaN values with mean value of it's column
+    # Fill missing values in numeric columns with their mean
+    numeric_columns = data.select_dtypes(include=['number']).columns
+    data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
 
-    X = data.drop(columns=[target_column])  # Returns 2-dimensional list, data set without target column
-    y = data[target_column]  # Drops target column
+    # Separate features (X) and target (y)
+    X = data.drop(columns=[target_column])
+    y = data[target_column]
 
-    scaler = StandardScaler()  # Scaler standardize values that it's values mean is 0 and standard deviation 1
-    X_scaled = scaler.fit_transform(X)  # Standardize data
+    # Identify categorical and numerical columns
+    categorical_columns = X.select_dtypes(include=['object']).columns
+    numeric_columns = X.select_dtypes(include=['number']).columns
 
-    X_train, y_train, X_test, y_test = train_test_split(X_scaled, y, test_size=test_size, random_state=random_state)  # Train data
+    # Create transformers for numeric and categorical data
+    numeric_transformer = StandardScaler()
+    categorical_transformer = OneHotEncoder(handle_unknown='ignore')
 
-    return X_train, y_train, X_test, y_test, scaler
+    # Create a preprocessing pipeline that applies the transformations
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num', numeric_transformer, numeric_columns),
+            ('cat', categorical_transformer, categorical_columns)
+        ])
+
+    # Apply the transformations
+    X_processed = preprocessor.fit_transform(X)
+
+    # Split the data into training and test sets
+    X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=test_size, random_state=random_state)
+
+    return X_train, y_train, X_test, y_test, preprocessor
 
 def preprocess_input(input_data, scaler):
     input_data = pd.DataFrame([input_data])

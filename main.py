@@ -5,6 +5,8 @@ from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sklearn.metrics import r2_score
+
 from model import load_model, train_model, predict
 from utils.data_preprocessing import preprocess_input, load_data, preprocess_data
 import logging
@@ -17,13 +19,16 @@ SCALER_FILENAME = 'scaler.pkl'
 # Configure basic logging settings
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+X_test, y_test = None, None
+
 # Function to check and initialize model and scaler on first run
 def initialize_model():
+    global X_test, y_test
     if not os.path.exists(MODEL_FILENAME) or not os.path.exists(SCALER_FILENAME):
         logging.info('Model or scaler not found. Training model for the first time...')
         # Paths to dataset and target column
-        initial_data_path = 'data/initial_dataset.csv'  # TO DO Change path to dataset to correct one
-        target_column = 'house_price'  # TO DO Change target_column to correct one
+        initial_data_path = 'data/house_price_data.csv'
+        target_column = 'SalePrice'
 
         # Load and preprocess data
         data = load_data(initial_data_path)
@@ -69,6 +74,18 @@ def predict_house_price(request: PredicitonRequest):
     except Exception as e:
         logging.error(f"Error during prediction: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred during prediction.")
+
+@app.get("/accuracy")
+def get_model_accuracy():
+    if X_test is None or y_test is None:
+        raise HTTPException(status_code=400, detail="Test data not available. Model needs to be retrained.")
+
+    # Make predictions on the test data
+    y_pred = model.predict(X_test)
+
+    # Calculate R² score (can be changed to other metrics if needed)
+    accuracy = r2_score(y_test, y_pred)
+    return {"accuracy": accuracy}
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
