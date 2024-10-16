@@ -1,8 +1,27 @@
 <!-- templates/home.html -->
 {% extends "base.html" %}
 
-{% block title %}Home - My Website{% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>Hello, World!</h1>
+<form action="" method="POST" class="form-control">
+    {% for input in inputs %}
+    <label>
+        {{ input.name }}
+        {% if input.type == "numeric" %}
+        <input type="number" name="{{ input.name }}" placeholder="{{ input.description }}" class="form-control">
+        {% elif input.type == "select"%}
+        <select name="{{ input.name }}" class="form-control">
+            {% for value, name in input.options.items() %}
+            <option value="{{ value }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+    </label>
+
+    {% endfor %}
+
+    <button class="btn btn-success btn-lg">Submit</button>
+</form>
+
 {% endblock %}

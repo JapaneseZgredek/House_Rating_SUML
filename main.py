@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 from sklearn.metrics import r2_score
 
 from model import load_model, train_model, predict
+from utils.Inputs import inputs
 from utils.data_preprocessing import preprocess_input, load_data, preprocess_data
 import logging
 
@@ -90,7 +91,7 @@ def get_model_accuracy():
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     logging.info(f"Received request at '/' from {request.client.host}")
-    return templates.TemplateResponse("home.html", {"request": request})
+    return templates.TemplateResponse("home.html", {"request": request, "inputs": inputs})
 
 @app.get("/about", response_class=HTMLResponse)
 def about(request: Request):
