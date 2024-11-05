@@ -4,24 +4,38 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<form action="" method="POST" class="form-control">
-    {% for input in inputs %}
-    <label>
-        {{ input.name }}
-        {% if input.type == "numeric" %}
-        <input type="number" name="{{ input.name }}" placeholder="{{ input.description }}" class="form-control">
-        {% elif input.type == "select"%}
-        <select name="{{ input.name }}" class="form-control">
-            {% for value, name in input.options.items() %}
-            <option value="{{ value }}">{{ name }}</option>
+<div class="container mt-5">
+    <div class="card shadow-lg p-5 border-0 rounded-10">
+        <h2 class="text-center mb-5 text-primary">Calculate House Price</h2>
+        <!-- Whole Form -->
+        <form action="/predict" method="POST" class="row row-cols-1 row-cols-md-4 g-5 justify-content-center">
+            {% for input in inputs %}
+            <div class="col position-relative">
+                <!-- label -->
+                <label class="form-label fw-semibold d-block text-center">
+                    {{ input.name }}
+                </label>
+                <!-- input fields logic -->
+                {% if input.type == "numeric" %}
+                <input type="number" name="{{ input.name }}" placeholder="{{ input.description }}"
+                       class="form-control border-primary" data-description="{{ input.description }}">
+                {% elif input.type == "select" %}
+                <select name="{{ input.name }}" class="form-control border-primary"
+                        data-description="{{ input.description }}">
+                    {% for value, name in input.options.items() %}
+                    <option value="{{ value }}">{{ name }}</option>
+                    {% endfor %}
+                </select>
+                {% endif %}
+                <!-- description span -->
+                <span class="description">{{ input.description }}</span>
+            </div>
             {% endfor %}
-        </select>
-        {% endif %}
-    </label>
-
-    {% endfor %}
-
-    <button class="btn btn-success btn-lg">Submit</button>
-</form>
-
+            <div class="col-12 text-center mt-4">
+                <!-- submit button -->
+                <button type="submit" class="btn btn-success btn-lg w-50">Submit</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
