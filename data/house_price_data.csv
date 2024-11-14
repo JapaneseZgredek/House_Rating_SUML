@@ -1,4 +1,4 @@
-LotArea,Neighborhood,OverallQual,OverallCond,YearBuilt,YearRemodAdd,BsmtQual,BsmtExposure,BsmtFinSF1,TotalBsmtSF,1stFlrSF,2ndFlrSF,GrLivArea,FullBath,KitchenQual,Fireplaces,GarageCars,GarageArea,OpenPorchSF,SalePrice
+LotArea,Neighborhood,OverallQual,OverallCond,YearBuilt,YearRemodAdd,BsmtQual,BsmtExposure,BsmtFinSF1,TotalBsmtSF,FirstFlrSF,SecondFlrSF,GrLivArea,FullBath,KitchenQual,Fireplaces,GarageCars,GarageArea,OpenPorchSF,SalePrice
 8450,CollgCr,7,5,2003,2003,Gd,No,706,856,856,854,1710,2,Gd,0,2,548,61,208500
 9600,Veenker,6,8,1976,1976,Gd,Gd,978,1262,1262,0,1262,2,TA,1,2,460,0,181500
 11250,CollgCr,7,5,2001,2002,Gd,Mn,486,920,920,866,1786,2,Gd,1,2,608,42,223500

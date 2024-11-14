@@ -129,12 +129,13 @@ async def predict_house_price(LotArea: int = Form(...),
         "OpenPorchSF": OpenPorchSF,    }
 
 
-    return {JSONResponse(content=data,status_code=200)}
+    # return {JSONResponse(content=data,status_code=200)}
     if not data:
         logging.error('No input data provided.')
         raise HTTPException(status_code=400, detail='No input data provided.')
 
     try:
+        logging.info(data)
         input_data_scaled = preprocess_input(data, scaler)
         prediction = predict(model, input_data_scaled)
         return JSONResponse(content={"prediction": prediction}, status_code=200)  # return json with prediction
