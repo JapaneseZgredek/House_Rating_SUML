@@ -126,10 +126,9 @@ async def predict_house_price(LotArea: int = Form(...),
         "Fireplaces": Fireplaces,
         "GarageCars": GarageCars,
         "GarageArea": GarageArea,
-        "OpenPorchSF": OpenPorchSF,    }
+        "OpenPorchSF": OpenPorchSF}
 
-
-    # return {JSONResponse(content=data,status_code=200)}
+    return {JSONResponse(content=data,status_code=200)}
     if not data:
         logging.error('No input data provided.')
         raise HTTPException(status_code=400, detail='No input data provided.')
