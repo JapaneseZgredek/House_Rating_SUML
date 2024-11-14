@@ -32,8 +32,8 @@ inputs = [
            'NA': 'No Basement'}),
     Input('BsmtFinSF1', 'Type 1 finished square feet', 'numeric', []),
     Input('TotalBsmtSF', 'Total square feet of basement area', 'numeric', []),
-    Input('1stFlrSF', 'First Floor square feet', 'numeric', []),
-    Input('2ndFlrSF', 'Second floor square feet', 'numeric', []),
+    Input('FirstFlrSF', 'First Floor square feet', 'numeric', []),
+    Input('SecondFlrSF', 'Second floor square feet', 'numeric', []),
     Input('GrLivArea', 'Above grade (ground) living area square feet', 'numeric', []),
     Input('FullBath', 'Full bathrooms above grade', 'numeric', []),
     Input('KitchenQual', 'Kitchen quality', 'select',
@@ -42,5 +42,5 @@ inputs = [
     Input('GarageCars', 'Size of garage in car capacity', 'numeric', []),
     Input('GarageArea', 'Size of garage in square feet', 'numeric', []),
     Input('OpenPorchSF', 'Open porch area in square feet', 'numeric', []),
-    Input('SalePrice', 'Sale price of the property', 'numeric', []),
+    # Input('SalePrice', 'Sale price of the property', 'numeric', []),
 ]

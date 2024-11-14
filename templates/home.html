@@ -17,8 +17,8 @@
                 </label>
                 <!-- input fields logic -->
                 {% if input.type == "numeric" %}
-                <input type="number" name="{{ input.name }}" placeholder="{{ input.description }}"
-                       class="form-control border-primary" data-description="{{ input.description }}">
+                <input  type="number" name="{{ input.name }}" placeholder="{{ input.description }}"
+                       class="form-control border-primary" data-description="{{ input.description }}" required>
                 {% elif input.type == "select" %}
                 <select name="{{ input.name }}" class="form-control border-primary"
                         data-description="{{ input.description }}">
