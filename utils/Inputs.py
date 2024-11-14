@@ -42,5 +42,5 @@ inputs = [
     Input('GarageCars', 'Size of garage in car capacity', 'numeric', []),
     Input('GarageArea', 'Size of garage in square feet', 'numeric', []),
     Input('OpenPorchSF', 'Open porch area in square feet', 'numeric', []),
-    Input('SalePrice', 'Sale price of the property', 'numeric', []),
+    # Input('SalePrice', 'Sale price of the property', 'numeric', []),
 ]

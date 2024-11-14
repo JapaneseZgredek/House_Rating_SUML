@@ -1,9 +1,69 @@
 <!-- templates/about.html -->
 {% extends "base.html" %}
 
-{% block title %}About - My Website{% endblock %}
+{% block title %}About Us{% endblock %}
 
 {% block content %}
-    <h1>About Us</h1>
-    <p>This is the about page.</p>
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 border-0 rounded-3">
+        <!-- About us -->
+        <h2 class="text-center mb-4 text-primary">About Us</h2>
+        <p class="text-center mb-4">
+            We are a professional team of data scientists and machine learning experts, who care about what is really
+            needed.<br>
+            We make projects using our extensive knowledge and expirience to help consumers and small businesses.
+        </p>
+        <!-- 4 cads with team members -->
+
+        <h4 class="text-center mb-4">Our Team</h4>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <!-- first card beginning-->
+            <div class="col">
+                <div class="card text-center border-0">
+                    <img src="https://avatars.githubusercontent.com/u/84537728" style="width: 150px;"
+                         class="card-img-top rounded-circle mx-auto mt-3" alt="Team Member">
+                    <div class="card-body">
+                        <h5 class="card-title">Fabian Zbrański</h5>
+                        <p class="card-text">CEO, Founder & ML Expert</p>
+                    </div>
+                </div>
+            </div>
+            <!-- first card end.
+            Three of the same thing >  -->
+            <div class="col">
+                <div class="card text-center border-0">
+                    <img src="https://avatars.githubusercontent.com/u/5730766" style="width: 150px;"
+                         class="card-img-top rounded-circle mx-auto mt-3" alt="Team Member">
+                    <div class="card-body">
+                        <h5 class="card-title">Antoni Siek</h5>
+                        <p class="card-text">Lead Data Scientist</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center border-0">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png" style="width: 150px;"
+                         class="card-img-top rounded-circle mx-auto mt-3"
+                         alt="Team Member">
+                    <div class="card-body">
+                        <h5 class="card-title">Alan Giermasz</h5>
+                        <p class="card-text">Marketing Manager & HR</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-center border-0">
+                    <img src="https://avatars.githubusercontent.com/u/102504342" style="width: 150px;"
+                         class="card-img-top rounded-circle mx-auto mt-3" alt="Team Member">
+                    <div class="card-body">
+                        <h5 class="card-title">Kiryl Babko</h5>
+                        <p class="card-text">Frontend & Software Developer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
+Added pages contents/styling.
+![image](https://github.com/user-attachments/assets/545c1402-ebf6-4d5e-86ee-1530afa36964)

@@ -1,11 +1,12 @@
 import os
 import pickle
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Form
 from pydantic import BaseModel
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sklearn.metrics import r2_score
+from starlette.responses import JSONResponse
 
 from model import load_model, train_model, predict
 from utils.Inputs import inputs
@@ -21,6 +22,7 @@ SCALER_FILENAME = 'scaler.pkl'
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 X_test, y_test = None, None
+
 
 # Function to check and initialize model and scaler on first run
 def initialize_model():
@@ -56,25 +58,90 @@ with open(SCALER_FILENAME, 'rb') as file:
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
+
 # Class that will be used for receiving data from front-end user
 class PredicitonRequest(BaseModel):
     features: list
 
+
 # Prediction endpoint
+class InputData(BaseModel):
+    LotArea: int
+    Neighborhood: str
+    OverallQual: int
+    OverallCond: int
+    YearBuilt: int
+    YearRemodAdd: int
+    BsmtQual: str
+    BsmtExposure: str
+    BsmtFinSF1: int
+    TotalBsmtSF: int
+    FirstFlrSF: int
+    SecondFlrSF: int
+    GrLivArea: int
+    FullBath: int
+    KitchenQual: str
+    Fireplaces: int
+    GarageCars: int
+    GarageArea: int
+    OpenPorchSF: int
+
+
 @app.post(path='/predict')
-def predict_house_price(request: PredicitonRequest):
-    input_data = request.features
-    if not input_data:
+async def predict_house_price(LotArea: int = Form(...),
+                              Neighborhood: str = Form(...),
+                              OverallQual: int = Form(...),
+                              OverallCond: int = Form(...),
+                              YearBuilt: int = Form(...),
+                              YearRemodAdd: int = Form(...),
+                              BsmtQual: str = Form(...),
+                              BsmtExposure: str = Form(...),
+                              BsmtFinSF1: int = Form(...),
+                              TotalBsmtSF: int = Form(...),
+                              FirstFlrSF: int = Form(...),
+                              SecondFlrSF: int = Form(...),
+                              GrLivArea: int = Form(...),
+                              FullBath: int = Form(...),
+                              KitchenQual: str = Form(...),
+                              Fireplaces: int = Form(...),
+                              GarageCars: int = Form(...),
+                              GarageArea: int = Form(...),
+                              OpenPorchSF: int = Form(...),):
+    data = {
+        "LotArea": LotArea,
+        "Neighborhood": Neighborhood,
+        "OverallQual": OverallQual,
+        "OverallCond": OverallCond,
+        "YearBuilt": YearBuilt,
+        "YearRemodAdd": YearRemodAdd,
+        "BsmtQual": BsmtQual,
+        "BsmtExposure": BsmtExposure,
+        "BsmtFinSF1": BsmtFinSF1,
+        "TotalBsmtSF": TotalBsmtSF,
+        "FirstFlrSF": FirstFlrSF,
+        "SecondFlrSF": SecondFlrSF,
+        "GrLivArea": GrLivArea,
+        "FullBath": FullBath,
+        "KitchenQual": KitchenQual,
+        "Fireplaces": Fireplaces,
+        "GarageCars": GarageCars,
+        "GarageArea": GarageArea,
+        "OpenPorchSF": OpenPorchSF}
+
+    return {JSONResponse(content=data,status_code=200)}
+    if not data:
         logging.error('No input data provided.')
         raise HTTPException(status_code=400, detail='No input data provided.')
 
     try:
-        input_data_scaled = preprocess_input(input_data, scaler)
+        logging.info(data)
+        input_data_scaled = preprocess_input(data, scaler)
         prediction = predict(model, input_data_scaled)
-        return {"predicted_price": prediction}  # return json with prediction
+        return JSONResponse(content={"prediction": prediction}, status_code=200)  # return json with prediction
     except Exception as e:
         logging.error(f"Error during prediction: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred during prediction.")
+
 
 @app.get("/accuracy")
 def get_model_accuracy():
@@ -88,10 +155,12 @@ def get_model_accuracy():
     accuracy = r2_score(y_test, y_pred)
     return {"accuracy": accuracy}
 
+
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     logging.info(f"Received request at '/' from {request.client.host}")
     return templates.TemplateResponse("home.html", {"request": request, "inputs": inputs})
+
 
 @app.get("/about", response_class=HTMLResponse)
 def about(request: Request):
