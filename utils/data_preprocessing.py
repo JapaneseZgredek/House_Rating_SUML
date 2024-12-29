@@ -7,21 +7,25 @@ def load_data(file_path):
     data = pd.read_csv(file_path)
     return data
 
-def preprocess_data(data, target_column, test_size=0.2, random_state=42):
+def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state=42):
     # Drop rows with missing target values
     data = data.dropna(subset=[target_column])
+
+    # Drop low-impact columns based on EDA
+    low_impact_columns = ['OverallCond', 'LotArea', 'OpenPorchSF']
+    data = data.drop(columns=low_impact_columns)
 
     # Fill missing values in numeric columns with their mean
     numeric_columns = data.select_dtypes(include=['number']).columns
     data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
 
+    # Fill missing values in categorical columns with a placeholder
+    categorical_columns = data.select_dtypes(include=['object']).columns
+    data[categorical_columns] = data[categorical_columns].fillna('Unknown')
+
     # Separate features (X) and target (y)
     X = data.drop(columns=[target_column])
     y = data[target_column]
-
-    # Identify categorical and numerical columns
-    categorical_columns = X.select_dtypes(include=['object']).columns
-    numeric_columns = X.select_dtypes(include=['number']).columns
 
     # Create transformers for numeric and categorical data
     numeric_transformer = StandardScaler()
@@ -30,8 +34,8 @@ def preprocess_data(data, target_column, test_size=0.2, random_state=42):
     # Create a preprocessing pipeline that applies the transformations
     preprocessor = ColumnTransformer(
         transformers=[
-            ('num', numeric_transformer, numeric_columns),
-            ('cat', categorical_transformer, categorical_columns)
+            ('num', numeric_transformer, X.select_dtypes(include=['number']).columns),
+            ('cat', categorical_transformer, X.select_dtypes(include=['object']).columns)
         ])
 
     # Apply the transformations
