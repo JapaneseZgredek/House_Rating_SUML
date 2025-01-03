@@ -15,6 +15,12 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
     low_impact_columns = ['OverallCond', 'LotArea', 'OpenPorchSF']
     data = data.drop(columns=low_impact_columns)
 
+  # Drop columns with high percentage of missing values
+    missing_threshold = 50 
+    missing_percentage = data.isnull().mean() * 100
+    data = data.drop(columns=missing_percentage)
+
+
     # Fill missing values in numeric columns with their mean
     numeric_columns = data.select_dtypes(include=['number']).columns
     data[numeric_columns] = data[numeric_columns].fillna(data[numeric_columns].mean())
