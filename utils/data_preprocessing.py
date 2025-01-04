@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.model_selection import train_test_split
+import pickle
 
 def load_data(file_path):
     data = pd.read_csv(file_path)
@@ -28,6 +29,12 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
     # Fill missing values in categorical columns with a placeholder
     categorical_columns = data.select_dtypes(include=['object']).columns
     data[categorical_columns] = data[categorical_columns].fillna('Unknown')
+
+
+    # Save remaining column names to a .pkl file
+    column_names = data.columns.tolist()
+    with open('remaining_columns.pkl', 'wb') as f:
+        pickle.dump(column_names, f)
 
     # Separate features (X) and target (y)
     X = data.drop(columns=[target_column])
