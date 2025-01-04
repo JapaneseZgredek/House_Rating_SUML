@@ -7,7 +7,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sklearn.metrics import r2_score
 from starlette.responses import JSONResponse
-
+import pandas as pd
 from model import load_model, train_model, predict
 from utils.Inputs import inputs
 from utils.data_preprocessing import preprocess_input, load_data, preprocess_data
@@ -128,7 +128,30 @@ async def predict_house_price(LotArea: int = Form(...),
         "GarageArea": GarageArea,
         "OpenPorchSF": OpenPorchSF}
 
-    return {JSONResponse(content=data,status_code=200)}
+    df = pd.DataFrame([data])
+
+    # Load the list of columns 'remaining_columns.pkl' file
+    try:
+        with open('remaining_columns.pkl', 'rb') as f:
+            remaining_columns = pickle.load(f)
+    except FileNotFoundError:
+        logging.error("remaining_columns.pkl file not found.")
+        raise HTTPException(status_code=500, detail="Configuration file missing.")
+    
+    # Check if any columns are missing from the users input and add them
+    missing_columns = set(remaining_columns) - set(df.columns)
+    if missing_columns:
+        for col in missing_columns:
+            # Add missing columns with default values
+            if col in df.select_dtypes(include=['number']).columns:
+                df[col] = 0  # For numeric columns, use 0 as default
+            else:
+                df[col] = 'Unknown'  # For categorical columns, use 'Unknown' as default
+        logging.info(f"Added missing columns: {missing_columns}")
+
+    result_data = df.to_dict(orient="records")[0]
+
+    return {JSONResponse(content=result_data,status_code=200)}
     if not data:
         logging.error('No input data provided.')
         raise HTTPException(status_code=400, detail='No input data provided.')
