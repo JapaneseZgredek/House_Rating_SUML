@@ -1,3 +1,4 @@
+
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -12,15 +13,17 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
     # Drop rows with missing target values
     data = data.dropna(subset=[target_column])
 
-    # Drop low-impact columns based on EDA
-    low_impact_columns = ['OverallCond', 'LotArea', 'OpenPorchSF']
-    data = data.drop(columns=low_impact_columns)
-
-  # Drop columns with high percentage of missing values
-    missing_threshold = 50 
+    # Drop columns with high percentage of missing values
+    missing_threshold = 50  # Threshold: columns with >50% missing values are dropped
     missing_percentage = data.isnull().mean() * 100
-    data = data.drop(columns=missing_percentage)
+    data = data.drop(columns=missing_percentage[missing_percentage > missing_threshold].index)
 
+    # Select features highly correlated with the target
+    correlation_matrix = data.select_dtypes(include=['number']).corr()
+    target_correlation = correlation_matrix[target_column].abs().sort_values(ascending=False)
+    top_features = target_correlation.index[1:6].tolist()  # Top 5 features excluding target
+    selected_columns = top_features + [target_column]
+    data = data[selected_columns]
 
     # Fill missing values in numeric columns with their mean
     numeric_columns = data.select_dtypes(include=['number']).columns
@@ -29,7 +32,6 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
     # Fill missing values in categorical columns with a placeholder
     categorical_columns = data.select_dtypes(include=['object']).columns
     data[categorical_columns] = data[categorical_columns].fillna('Unknown')
-
 
     # Save remaining column names to a .pkl file
     column_names = data.columns.tolist()

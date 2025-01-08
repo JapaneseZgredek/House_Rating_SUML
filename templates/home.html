@@ -31,10 +31,18 @@
                 <span class="description">{{ input.description }}</span>
             </div>
             {% endfor %}
+
             <div class="col-12 text-center mt-4">
                 <!-- submit button -->
                 <button type="submit" class="btn btn-success btn-lg w-50">Submit</button>
             </div>
+            <div class="card text-center border-0">
+                <label>Prediction:</label>
+                {% if prediction %}
+            <p>${{ '{:,.2f}'.format(prediction) }}</p>
+        {% else %}
+            <p></p>
+                {% endif %}</div>
         </form>
     </div>
 </div>

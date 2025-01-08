@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from sklearn.metrics import r2_score
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, RedirectResponse
 import pandas as pd
 from model import load_model, train_model, predict
 from utils.Inputs import inputs
@@ -151,7 +151,7 @@ async def predict_house_price(LotArea: int = Form(...),
 
     result_data = df.to_dict(orient="records")[0]
 
-    return {JSONResponse(content=result_data,status_code=200)}
+    # return {JSONResponse(content=result_data,status_code=200)}
     if not data:
         logging.error('No input data provided.')
         raise HTTPException(status_code=400, detail='No input data provided.')
@@ -160,7 +160,10 @@ async def predict_house_price(LotArea: int = Form(...),
         logging.info(data)
         input_data_scaled = preprocess_input(data, scaler)
         prediction = predict(model, input_data_scaled)
-        return JSONResponse(content={"prediction": prediction}, status_code=200)  # return json with prediction
+        return RedirectResponse(
+            url=f"/?prediction={prediction}",
+            status_code=303
+        )
     except Exception as e:
         logging.error(f"Error during prediction: {str(e)}")
         raise HTTPException(status_code=500, detail="An error occurred during prediction.")
@@ -180,9 +183,13 @@ def get_model_accuracy():
 
 
 @app.get("/", response_class=HTMLResponse)
-def read_root(request: Request):
+def read_root(request: Request,prediction: float = None):
     logging.info(f"Received request at '/' from {request.client.host}")
-    return templates.TemplateResponse("home.html", {"request": request, "inputs": inputs})
+    return templates.TemplateResponse("home.html", {
+        "request": request,
+        "inputs":inputs,
+        "prediction": prediction
+    })
 
 
 @app.get("/about", response_class=HTMLResponse)
