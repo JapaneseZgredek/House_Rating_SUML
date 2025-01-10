@@ -21,7 +21,7 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
     # Select features highly correlated with the target
     correlation_matrix = data.select_dtypes(include=['number']).corr()
     target_correlation = correlation_matrix[target_column].abs().sort_values(ascending=False)
-    top_features = target_correlation.index[1:6].tolist()  # Top 5 features excluding target
+    top_features = target_correlation.index[1:20].tolist()
     selected_columns = top_features + [target_column]
     data = data[selected_columns]
 
@@ -63,5 +63,5 @@ def preprocess_data(data, target_column='SalePrice', test_size=0.2, random_state
 
 def preprocess_input(input_data, scaler):
     input_data = pd.DataFrame([input_data])
-    input_data_scaled = scaler.fit_transform(input_data)
+    input_data_scaled = scaler.transform(input_data)
     return input_data_scaled
